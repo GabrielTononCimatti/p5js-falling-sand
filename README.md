@@ -11,3 +11,5 @@ https://gabrieltononcimatti.github.io/p5js-falling-sand/
 - **Arrastar o mouse** — criar partículas de areia
 - **↓** — gravidade para baixo (padrão)
 - **↑** — gravidade para cima
+- **Areia / Fundo** — escolher cores via color picker ou HEX
+- **Limpar** — limpar a tela

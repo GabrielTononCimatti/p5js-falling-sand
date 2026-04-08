@@ -2,6 +2,8 @@ const COLS = 80;
 const ROWS = 60;
 let matrix = new Array(COLS);
 let gravityDown = true
+let sandColor = [255, 255, 255]
+let bgColor = [50, 50, 50]
 function setup() {
   frameRate(20)
 
@@ -12,7 +14,42 @@ function setup() {
     for (j = 0; j < COLS; j++)
       matrix[i][j] = 0
 
-  createCanvas(800, 600);
+  let canvas = createCanvas(800, 600);
+  canvas.parent('canvas-wrapper')
+
+  let sandPicker = document.getElementById('sand-color')
+  let sandHex = document.getElementById('sand-hex')
+  let bgPicker = document.getElementById('bg-color')
+  let bgHex = document.getElementById('bg-hex')
+  let clearBtn = document.getElementById('clear-btn')
+
+  sandPicker.addEventListener('input', function () {
+    sandHex.value = sandPicker.value
+    sandColor = hexToRgb(sandPicker.value)
+  })
+  sandHex.addEventListener('input', function () {
+    if (/^#[0-9a-fA-F]{6}$/.test(sandHex.value)) {
+      sandPicker.value = sandHex.value
+      sandColor = hexToRgb(sandHex.value)
+    }
+  })
+
+  bgPicker.addEventListener('input', function () {
+    bgHex.value = bgPicker.value
+    bgColor = hexToRgb(bgPicker.value)
+  })
+  bgHex.addEventListener('input', function () {
+    if (/^#[0-9a-fA-F]{6}$/.test(bgHex.value)) {
+      bgPicker.value = bgHex.value
+      bgColor = hexToRgb(bgHex.value)
+    }
+  })
+
+  clearBtn.addEventListener('click', function () {
+    for (i = 0; i < ROWS; i++)
+      for (j = 0; j < COLS; j++)
+        matrix[i][j] = 0
+  })
 
 }
 
@@ -24,7 +61,7 @@ function draw() {
       }
     }
   stroke(1)
-  background(50);
+  background(bgColor[0], bgColor[1], bgColor[2]);
   for (i = 0; i < 600; i += 10) {
     line(0, i, 800, i)
   }
@@ -55,7 +92,7 @@ function draw() {
 
     for (j = startJ; j !== endJ; j += stepJ) {
       if (matrix[i][j] == 1) {
-        fill(255)
+        fill(sandColor[0], sandColor[1], sandColor[2])
         noStroke()
         square(10 * j, 10 * i, 10)
         fill(0)
@@ -89,8 +126,11 @@ function draw() {
 
 }
 function mouseDragged() {
-  matrix[Math.floor(mouseY / 10)][Math.floor(mouseX / 10)] = 1;
-
+  let r = Math.floor(mouseY / 10)
+  let c = Math.floor(mouseX / 10)
+  if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+    matrix[r][c] = 1
+  }
 }
 function keyPressed() {
   if (keyCode === UP_ARROW) {
@@ -99,4 +139,10 @@ function keyPressed() {
   if (keyCode === DOWN_ARROW) {
     gravityDown = true
   }
+}
+function hexToRgb(hex) {
+  let r = parseInt(hex.substring(1, 3), 16)
+  let g = parseInt(hex.substring(3, 5), 16)
+  let b = parseInt(hex.substring(5, 7), 16)
+  return [r, g, b]
 }
